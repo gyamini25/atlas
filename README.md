@@ -1,6 +1,6 @@
 <div align="center">
 
-# ✨ Atlas — the Engineering Memory Engine
+# ✨ Atlas: the Engineering Memory Engine
 
 **Atlas answers the one question no developer tool answers well: _Why?_**
 
@@ -22,8 +22,7 @@ repository's real history.
 | GitHub | *What* changed, and when? |
 | **Atlas** | ***Why*** does this code exist? |
 
-Cursor helps you write code. GitHub stores history. **Atlas understands engineering history** —
-it is institutional memory for software teams.
+Cursor helps you write code. GitHub stores history. **Atlas understands engineering history** it is institutional memory for software teams.
 
 ## What it does
 
@@ -52,8 +51,8 @@ Repository ─▶ Indexer ─▶ Knowledge Graph ─▶ Embeddings ─▶ Reason
             docs · Slack
 ```
 
-The reasoning pipeline fuses three signals — **semantic similarity**, **graph proximity**
-(the causal chain of commits → PRs → incidents), and **recency** — so it explains the *why*,
+The reasoning pipeline fuses three signals **semantic similarity**, **graph proximity**
+(the causal chain of commits → PRs → incidents), and **recency**, so it explains the *why*,
 citing real artifacts, instead of returning the nearest document.
 
 ## Repository layout
@@ -169,7 +168,7 @@ Steps 3 and 4 are also available from the command palette as
 The summary text for `authenticateUser` is a curated trace in `backend/seed/traces.json`, so the
 flagship demo reads identically every run; its citations, timeline and graph are all derived from
 the repository. Ask about `rotateRefresh` (**0.97**) or `charge` (**0.46**, and it says the evidence
-is thin) to watch the pipeline reason from scratch — see [JUDGES.md](JUDGES.md).
+is thin) to watch the pipeline reason from scratch, see [JUDGES.md](JUDGES.md).
 
 > *"This repository no longer stores code. It remembers why the code exists."*
 
