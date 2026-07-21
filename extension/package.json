@@ -74,8 +74,8 @@
       "properties": {
         "atlas.backendUrl": {
           "type": "string",
-          "default": "http://127.0.0.1:8787",
-          "description": "URL of the Atlas backend API."
+          "default": "https://atlas-backend-ryj4.onrender.com",
+          "description": "URL of the Atlas backend API. Defaults to the hosted demo backend, which has the sample repository pre-indexed. Point it at http://127.0.0.1:8787 to use a backend you run locally via ./run.sh."
         }
       }
     }

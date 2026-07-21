@@ -35,6 +35,9 @@ _ANSWER_CACHE: dict[str, tuple[AskResult, AskExpansion]] = {}
 
 _CITEABLE = {"pull_request", "commit", "issue", "adr", "doc", "incident", "slack"}
 
+# How many sources the answer card cites; the full ranked list is kept for expansion.
+_MAX_CITED_SOURCES = 6
+
 
 @dataclass
 class _State:
@@ -59,7 +62,10 @@ def _collect(state: _State) -> _State:
     if node is not None:
         state.root_id = node.id
         state.root = state.store.get_artifact(state.repo, node.id)
-    state.evidence = retrieve(state.store, state.repo, state.question, state.root_id, top_k=8)
+    # Retrieve well past what we cite: code symbols outrank narrative artifacts on
+    # graph proximity but are not citeable, so a tight top_k starves Sources and
+    # Timeline of the PRs/ADRs/incidents that actually explain the code.
+    state.evidence = retrieve(state.store, state.repo, state.question, state.root_id, top_k=24)
     return state
 
 
@@ -78,7 +84,10 @@ def _synthesize(state: _State) -> _State:
     assert payload is not None
     answer_id = _answer_id(state.repo, state.target, state.question)
 
-    sources = _sources_from(state.evidence)
+    # Cite the top few, but keep the full list: Slack/issue threads routinely rank
+    # below the citation cutoff, and "Learn More" should still surface them.
+    all_sources = _sources_from(state.evidence, limit=None)
+    sources = all_sources[:_MAX_CITED_SOURCES]
     key_reasons = _key_reasons(payload)
 
     result = AskResult(
@@ -98,7 +107,9 @@ def _synthesize(state: _State) -> _State:
         timeline=state.timeline,
         dependencies=payload.dependencies,
         impact_summary=payload.impact_summary,
-        related_discussions=[s for s in sources if s.kind in {SourceKind.SLACK, SourceKind.ISSUE}],
+        related_discussions=[
+            s for s in all_sources if s.kind in {SourceKind.SLACK, SourceKind.ISSUE}
+        ],
     )
     state.result = result
     state.expansion = expansion
@@ -164,7 +175,7 @@ def _ensure_state(state) -> _State:
     return state
 
 
-def _sources_from(evidence: list[Evidence]) -> list[Source]:
+def _sources_from(evidence: list[Evidence], limit: int | None = _MAX_CITED_SOURCES) -> list[Source]:
     sources: list[Source] = []
     seen: set[str] = set()
     for ev in evidence:
@@ -188,7 +199,7 @@ def _sources_from(evidence: list[Evidence]) -> list[Source]:
                 detail=(a.body or "").strip().splitlines()[0][:120] if a.body else None,
             )
         )
-        if len(sources) >= 6:
+        if limit is not None and len(sources) >= limit:
             break
     return sources
 
