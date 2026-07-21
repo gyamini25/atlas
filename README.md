@@ -4,7 +4,7 @@
 
 **Atlas answers the one question no developer tool answers well: _Why?_**
 
-Not "what does this code do" or "how do I write this" — but *why does this code exist,
+Not "what does this code do" or "how do I write this" but *why does this code exist,
 why was this architecture chosen, what incident caused it, and what breaks if I change it.*
 
 Atlas lives inside VS Code / Cursor and reconstructs engineering intent from your
