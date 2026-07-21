@@ -171,6 +171,11 @@ export class AtlasViewProvider implements vscode.WebviewViewProvider {
   }
 
   private async impact(target: string) {
+    // Mirror replayFromEditor: the Impact tab's button can be the first thing a
+    // user clicks, so pick up editor context rather than silently doing nothing.
+    if (!this.ctx) {
+      await this.askFromEditor();
+    }
     if (!this.ctx) return;
     this.post({ type: 'impact:pending', target });
     try {

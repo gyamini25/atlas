@@ -128,7 +128,12 @@ export function ReplayTab(props: { pending: boolean; steps: ReplayStep[] }) {
     return (
       <div className="empty">
         <div className="big">🎬</div>
-        Run <b>Replay Evolution</b> to watch why this code changed over time.
+        Watch why this code changed over time.
+        <div className="actions" style={{ marginTop: 14, justifyContent: 'center' }}>
+          <button className="action" onClick={() => send({ type: 'replay' })}>
+            🎬 Replay Evolution
+          </button>
+        </div>
       </div>
     );
   }
@@ -189,7 +194,14 @@ export function ImpactTab(props: { pending: boolean; target: string; report: Imp
     return (
       <div className="empty">
         <div className="big">💥</div>
-        Run <b>Impact Analysis</b> to see what breaks if you remove or change something.
+        See what breaks if you remove or change something.
+        <div className="actions" style={{ marginTop: 14, justifyContent: 'center' }}>
+          {/* No `target` key: the host falls back to the symbol in the editor via
+              `??`, which an empty string would defeat. */}
+          <button className="action" onClick={() => send({ type: 'impact' })}>
+            💥 Impact Analysis
+          </button>
+        </div>
       </div>
     );
   }

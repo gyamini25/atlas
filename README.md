@@ -111,9 +111,15 @@ Open the `demo/acme-fintech-platform` folder, open
 ## The 30-second demo
 
 1. Open the demo repo, select `authenticateUser`, click **✨ Ask Atlas**.
-2. Atlas answers with **96% confidence**: OAuth outage (INC-284) → ADR-012 → retry + Redis fallback (PR #842).
-3. Open the **Timeline** tab → **Decision Replay** animates *why* the code evolved, 2022 → today.
-4. Ask **"What breaks if I remove Redis?"** → Atlas reasons it's **critical**: 5 services, auth + payments.
+2. Atlas answers with **96% confidence**: OAuth outage (INC-284) → ADR-012 → retry + Redis fallback (PR #842),
+   citing the commit, PR, incident, ADR and Slack thread it reasoned over.
+3. Open the **Timeline** tab → click **🎬 Replay Evolution** → the decision replay animates
+   *why* the code evolved, 2022 → today.
+4. Open the **Impact** tab → click **💥 Impact Analysis** → Atlas reasons it's **critical**:
+   5 services, auth + payments.
+
+Steps 3 and 4 are also available from the command palette as
+**Atlas: Replay Evolution** and **Atlas: Impact Analysis**.
 
 > *"This repository no longer stores code. It remembers why the code exists."*
 
