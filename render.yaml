@@ -18,9 +18,9 @@ services:
       - key: ATLAS_LLM_MODE
         value: mock           # set to "live" once OPENAI_API_KEY is configured
       - key: ATLAS_MODEL
-        value: gpt-5.6
+        value: gpt-5.6-sol       # GPT-5.6 ships as variants; no bare "gpt-5.6"
       - key: ATLAS_MODEL_FALLBACKS
-        value: gpt-5,gpt-4.1,gpt-4o
+        value: gpt-5.6-luna,gpt-5.6-terra,gpt-5.5,gpt-5.1,gpt-5,gpt-4.1,gpt-4o
       - key: OPENAI_API_KEY
         sync: false           # set in the Render dashboard, never committed
       # The demo repo is baked in and pre-indexed by the Docker image.

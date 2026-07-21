@@ -31,11 +31,13 @@ class Settings(BaseSettings):
     # OpenAI key is read WITHOUT the ATLAS_ prefix so it matches the ecosystem
     # standard `OPENAI_API_KEY`.
     openai_api_key: str = Field(default="", alias="OPENAI_API_KEY")
-    model: str = "gpt-5.6"
+    # GPT-5.6 ships as named variants (luna/sol/terra) — there is no bare
+    # "gpt-5.6" id — so we target a real variant here.
+    model: str = "gpt-5.6-sol"
     # Comma-separated fallbacks tried if `model` is unavailable at runtime, so a
     # mis-typed / unreleased model id degrades gracefully instead of 404-ing the
     # whole demo. Set to the ids your key can actually access.
-    model_fallbacks: str = "gpt-5,gpt-4.1,gpt-4o"
+    model_fallbacks: str = "gpt-5.6-luna,gpt-5.6-terra,gpt-5.5,gpt-5.1,gpt-5,gpt-4.1,gpt-4o"
     embedding_model: str = "text-embedding-3-large"
     llm_mode: LLMMode = "mock"
 
