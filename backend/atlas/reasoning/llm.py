@@ -85,11 +85,14 @@ class LLM:
         ]
         for model in self._settings.model_candidates:
             try:
+                # NOTE: GPT-5.x reasoning models require `max_completion_tokens`
+                # (not `max_tokens`) and only support the default temperature, so
+                # we omit `temperature`. These params also work for gpt-4.x.
                 resp = self._openai().chat.completions.create(
                     model=model,
                     messages=messages,
                     response_format={"type": "json_object"},
-                    temperature=0.2,
+                    max_completion_tokens=3000,
                 )
                 data = json.loads(resp.choices[0].message.content or "{}")
                 return ReasonPayload(
@@ -121,7 +124,7 @@ class LLM:
                 self._openai().chat.completions.create(
                     model=model,
                     messages=[{"role": "user", "content": "ping"}],
-                    max_tokens=1,
+                    max_completion_tokens=16,
                 )
                 return {"ok": True, "mode": "live", "model": model, "error": None}
             except Exception as exc:
@@ -139,7 +142,7 @@ class LLM:
                     {"role": "system", "content": prompts.NARRATION_SYSTEM},
                     {"role": "user", "content": context},
                 ],
-                temperature=0.3,
+                max_completion_tokens=400,
             )
             return (resp.choices[0].message.content or "").strip()
         except Exception:
