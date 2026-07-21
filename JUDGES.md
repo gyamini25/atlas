@@ -9,18 +9,31 @@ Total time: about 3 minutes, most of it the one-time build.
 
 ## Install
 
+Prefer no build? Download `atlas-vscode-0.1.0.vsix` from the
+[latest release](https://github.com/gyamini25/atlas/releases/latest), then
+`code --install-extension atlas-vscode-0.1.0.vsix` and skip to step 2 below.
+You still need the repository cloned for the sample code to open.
+
 ```bash
 git clone https://github.com/gyamini25/atlas.git
 cd atlas
-./setup.sh                                      # ~1 min
+./setup.sh     # builds VSIX in ~1 minute
+
 code --install-extension extension/*.vsix
 code demo/acme-fintech-platform
+
+# VS Code:
+# 1. Developer: Reload Window
+# 2. Select authenticateUser in auth.service.ts
+# 3. ✨ Ask Atlas
+# 4. Open Timeline → Replay Evolution
+# 5. Open Impact → Impact Analysis
 ```
 
-Then **reload VS Code** so it picks up the newly installed extension:
-`Cmd/Ctrl+Shift+P` → **Developer: Reload Window**.
+You should see the ✨ **Atlas** icon in the activity bar (left edge) after the reload.
 
-You should now see the ✨ **Atlas** icon in the activity bar (left edge).
+> **First analysis may take 10–15 seconds while the hosted backend wakes from idle.**
+> Everything after that is fast.
 
 > **Open `demo/acme-fintech-platform`, not the repository root.** Atlas indexes the
 > folder you open, and the sample repository's ADRs, incidents and PR exports live
@@ -96,9 +109,9 @@ subgraph (20 nodes, 25 edges) that the reasoning ran over.
 The window was open before the extension was installed. Reload it:
 `Cmd/Ctrl+Shift+P` → **Developer: Reload Window**.
 
-**The first request takes ~15 seconds.**
-The hosted backend sleeps when idle and is cold-starting. Subsequent requests are
-fast. Check it directly:
+**The first analysis takes 10–15 seconds.**
+Expected — the hosted backend sleeps when idle and is waking up. Every request
+after that is fast. Check it directly:
 
 ```bash
 curl https://atlas-backend-ryj4.onrender.com/health

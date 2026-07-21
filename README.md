@@ -68,6 +68,32 @@ atlas/
 
 ## Quick start
 
+> **Judging or just want to see it work?** Read **[JUDGES.md](JUDGES.md)** instead —
+> no API key, no database, no local backend, about 3 minutes:
+>
+> ```bash
+> git clone https://github.com/gyamini25/atlas.git
+> cd atlas
+> ./setup.sh     # builds VSIX in ~1 minute
+>
+> code --install-extension extension/*.vsix
+> code demo/acme-fintech-platform
+>
+> # VS Code:
+> # 1. Developer: Reload Window
+> # 2. Select authenticateUser in auth.service.ts
+> # 3. ✨ Ask Atlas
+> # 4. Open Timeline → Replay Evolution
+> # 5. Open Impact → Impact Analysis
+> ```
+>
+> The extension defaults to the hosted backend, which has the demo repository
+> pre-indexed. First analysis may take 10–15 seconds while it wakes from idle.
+> A prebuilt `.vsix` is attached to the [latest release](https://github.com/gyamini25/atlas/releases/latest)
+> if you'd rather not build.
+
+The sections below are for running everything yourself.
+
 ### 1. Backend
 
 ```bash
