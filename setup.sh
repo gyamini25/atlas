@@ -36,15 +36,21 @@ fi
 cat <<'EOF'
 
 ────────────────────────────────────────────────────────────
-Setup complete. To run Atlas:
+Setup complete. To see Atlas — no API key or local backend needed:
 
-  1. Start the backend:        ./run.sh
-  2. Install the extension:    code --install-extension extension/*.vsix
-     (or open ./extension in VS Code and press F5)
-  3. Open the demo repo:       code demo/acme-fintech-platform
-  4. Select `authenticateUser` in auth.service.ts → ✨ Ask Atlas
+  1. Install the extension:  code --install-extension extension/*.vsix
+  2. Open the demo repo:     code demo/acme-fintech-platform
+  3. Reload VS Code:         Cmd/Ctrl+Shift+P → "Developer: Reload Window"
+  4. In auth.service.ts, select `authenticateUser` → ✨ Ask Atlas
+  5. Timeline tab → 🎬 Replay Evolution
+     Impact tab   → 💥 Impact Analysis
 
-For LIVE GPT-5.6 reasoning: put OPENAI_API_KEY in backend/.env and set
-ATLAS_LLM_MODE=live, then check:  curl localhost:8787/api/verify-llm
+The extension talks to the hosted backend by default, which already has the
+demo repository indexed and runs GPT-5.6.
+
+To run the backend yourself instead:  ./run.sh
+then set the "atlas.backendUrl" VS Code setting to http://127.0.0.1:8787.
+That works offline in mock mode; for live GPT-5.6 put OPENAI_API_KEY in
+backend/.env with ATLAS_LLM_MODE=live and check /api/verify-llm.
 ────────────────────────────────────────────────────────────
 EOF
