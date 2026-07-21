@@ -1,0 +1,57 @@
+# Atlas local infrastructure.
+#
+#   docker compose up -d                 → Postgres + pgvector
+#   docker compose --profile neo4j up -d → also start Neo4j (optional graph backend)
+#
+# The backend runs on the host (uvicorn); only the datastores are containerised so
+# the VS Code extension can talk to a stable localhost API during development.
+
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: backend/Dockerfile
+    container_name: atlas-api
+    environment:
+      ATLAS_LLM_MODE: ${ATLAS_LLM_MODE:-mock}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ATLAS_MODEL: ${ATLAS_MODEL:-gpt-5.6}
+    ports:
+      - "8787:8787"
+    volumes:
+      # Mount the repos you want Atlas to index (index by /repos/<name> path).
+      - ../demo:/repos:ro
+
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: atlas-postgres
+    environment:
+      POSTGRES_USER: atlas
+      POSTGRES_PASSWORD: atlas
+      POSTGRES_DB: atlas
+    ports:
+      - "5432:5432"
+    volumes:
+      - atlas-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U atlas -d atlas"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  neo4j:
+    image: neo4j:5-community
+    container_name: atlas-neo4j
+    profiles: ["neo4j"]
+    environment:
+      NEO4J_AUTH: neo4j/atlaspassword
+      NEO4J_PLUGINS: '["apoc"]'
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - atlas-neo4jdata:/data
+
+volumes:
+  atlas-pgdata:
+  atlas-neo4jdata:

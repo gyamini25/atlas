@@ -1,0 +1,28 @@
+# Render Blueprint for the Atlas backend.
+#
+# Deploy: push this repo to GitHub, then in Render → "New +" → "Blueprint" and
+# point it at the repo. Render reads this file and provisions the service.
+#
+# After the first deploy, set OPENAI_API_KEY in the service's Environment tab and
+# flip ATLAS_LLM_MODE to "live" for real GPT-5.6 (leave "mock" for a zero-key demo).
+services:
+  - type: web
+    name: atlas-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: .
+    plan: starter            # 512MB; enough for the demo. Bump if indexing large repos.
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: ATLAS_LLM_MODE
+        value: mock           # set to "live" once OPENAI_API_KEY is configured
+      - key: ATLAS_MODEL
+        value: gpt-5.6
+      - key: ATLAS_MODEL_FALLBACKS
+        value: gpt-5,gpt-4.1,gpt-4o
+      - key: OPENAI_API_KEY
+        sync: false           # set in the Render dashboard, never committed
+      # The demo repo is baked in and pre-indexed by the Docker image.
+      - key: ATLAS_PREINDEX_PATH
+        value: /app/demo/acme-fintech-platform
