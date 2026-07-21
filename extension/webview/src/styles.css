@@ -1,0 +1,446 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Atlas webview design system.
+ * Everything is expressed against VS Code theme variables so the panel feels
+ * native in any dark (or light) theme, with Atlas's own restrained accent.
+ */
+
+:root {
+  --atlas-accent: #7c6cff;
+  --atlas-accent-2: #9d7bff;
+  --atlas-green: #3fb950;
+  --atlas-red: #f85149;
+  --atlas-amber: #d29922;
+  --atlas-blue: #58a6ff;
+  --atlas-radius: 10px;
+
+  --bg: var(--vscode-sideBar-background, #1e1e1e);
+  --fg: var(--vscode-foreground, #cccccc);
+  --muted: var(--vscode-descriptionForeground, #8b8b8b);
+  --card: color-mix(in srgb, var(--vscode-editor-background, #1e1e1e) 82%, #ffffff 6%);
+  --border: var(--vscode-panel-border, rgba(255, 255, 255, 0.08));
+  --input-bg: var(--vscode-input-background, #2a2a2a);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  color: var(--fg);
+  background: var(--bg);
+  font-family: var(--vscode-font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.atlas {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ── header + tabs ─────────────────────────────────────────────────────────── */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px 6px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.header .spark {
+  color: var(--atlas-accent-2);
+}
+.header .model-pill {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+
+.tabs {
+  display: flex;
+  gap: 2px;
+  padding: 0 10px;
+  border-bottom: 1px solid var(--border);
+}
+.tab {
+  appearance: none;
+  background: none;
+  border: none;
+  color: var(--muted);
+  padding: 8px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.tab:hover {
+  color: var(--fg);
+}
+.tab.active {
+  color: var(--fg);
+  border-bottom-color: var(--atlas-accent);
+}
+
+/* ── scroll body ───────────────────────────────────────────────────────────── */
+.body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ── question input ────────────────────────────────────────────────────────── */
+.ask-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--atlas-radius);
+  padding: 8px 10px;
+}
+.ask-input input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--fg);
+  font-size: 13px;
+}
+.ask-input .kbd {
+  font-size: 10px;
+  color: var(--muted);
+}
+.send-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 7px;
+  background: linear-gradient(135deg, var(--atlas-accent), var(--atlas-accent-2));
+  color: white;
+  cursor: pointer;
+  transition: transform 0.1s ease, opacity 0.15s ease;
+}
+.send-btn:hover {
+  transform: translateY(-1px);
+}
+.send-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* ── cards ─────────────────────────────────────────────────────────────────── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--atlas-radius);
+  padding: 14px;
+}
+.card-title {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.confidence {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--atlas-green);
+  background: color-mix(in srgb, var(--atlas-green) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--atlas-green) 40%, transparent);
+  border-radius: 999px;
+  padding: 2px 9px;
+}
+
+.summary {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--fg);
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: none;
+  margin: 12px 0 6px;
+}
+
+/* ── key reasons ───────────────────────────────────────────────────────────── */
+.reasons {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.reason {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  font-size: 12.5px;
+}
+.reason .check {
+  color: var(--atlas-green);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.reason b {
+  font-weight: 600;
+}
+
+/* ── source chips ──────────────────────────────────────────────────────────── */
+.sources {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 9px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--card) 60%, transparent);
+  cursor: pointer;
+  font-size: 11.5px;
+  color: var(--fg);
+  text-align: left;
+  transition: border-color 0.15s ease, transform 0.1s ease;
+  overflow: hidden;
+}
+.chip:hover {
+  border-color: color-mix(in srgb, var(--atlas-accent) 55%, var(--border));
+  transform: translateY(-1px);
+}
+.chip .chip-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.chip-icon {
+  flex-shrink: 0;
+  display: inline-flex;
+}
+.chip-icon.pull_request { color: var(--atlas-blue); }
+.chip-icon.incident { color: var(--atlas-red); }
+.chip-icon.adr { color: var(--atlas-accent-2); }
+.chip-icon.slack { color: var(--atlas-amber); }
+.chip-icon.commit { color: var(--muted); }
+.chip-icon.issue { color: var(--atlas-green); }
+.chip-icon.doc { color: var(--muted); }
+
+/* ── timeline ──────────────────────────────────────────────────────────────── */
+.timeline {
+  display: flex;
+  flex-direction: column;
+}
+.tl-row {
+  display: grid;
+  grid-template-columns: 58px 20px 1fr;
+  gap: 8px;
+  align-items: start;
+}
+.tl-date {
+  font-size: 11px;
+  color: var(--muted);
+  padding-top: 1px;
+  text-align: right;
+}
+.tl-rail {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+.tl-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--atlas-accent);
+  margin-top: 3px;
+  z-index: 1;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--atlas-accent) 22%, transparent);
+}
+.tl-dot.incident {
+  background: var(--atlas-red);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--atlas-red) 22%, transparent);
+}
+.tl-line {
+  position: absolute;
+  top: 8px;
+  bottom: -14px;
+  width: 2px;
+  background: var(--border);
+}
+.tl-row:last-child .tl-line { display: none; }
+.tl-body {
+  padding-bottom: 16px;
+}
+.tl-title {
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.tl-title.incident { color: var(--atlas-red); }
+.tl-detail {
+  font-size: 11.5px;
+  color: var(--muted);
+  margin-top: 1px;
+}
+.tl-narration {
+  font-size: 12px;
+  color: var(--fg);
+  margin-top: 3px;
+  line-height: 1.55;
+}
+
+/* ── action buttons ────────────────────────────────────────────────────────── */
+.actions {
+  display: flex;
+  gap: 8px;
+}
+.action {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: none;
+  color: var(--fg);
+  cursor: pointer;
+  font-size: 11.5px;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.action:hover {
+  border-color: color-mix(in srgb, var(--atlas-accent) 55%, var(--border));
+  background: color-mix(in srgb, var(--atlas-accent) 8%, transparent);
+}
+
+/* ── learn more ────────────────────────────────────────────────────────────── */
+.learn-more {
+  font-size: 11.5px;
+  color: var(--atlas-accent-2);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 4px;
+}
+.reasoning {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--fg);
+}
+.pill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.pill {
+  font-size: 11px;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 2px 9px;
+}
+
+/* ── risk badge ────────────────────────────────────────────────────────────── */
+.risk {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 2px 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.risk.low { color: var(--atlas-green); background: color-mix(in srgb, var(--atlas-green) 15%, transparent); }
+.risk.medium { color: var(--atlas-amber); background: color-mix(in srgb, var(--atlas-amber) 15%, transparent); }
+.risk.high { color: #ff8c42; background: color-mix(in srgb, #ff8c42 15%, transparent); }
+.risk.critical { color: var(--atlas-red); background: color-mix(in srgb, var(--atlas-red) 18%, transparent); }
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12.5px;
+}
+.list .row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.list .row .bullet { color: var(--atlas-accent-2); flex-shrink: 0; }
+.mono { font-family: var(--vscode-editor-font-family, monospace); font-size: 11.5px; }
+
+/* ── follow-up (sticky footer) ─────────────────────────────────────────────── */
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 10px 14px;
+}
+
+/* ── empty / loading ───────────────────────────────────────────────────────── */
+.empty {
+  text-align: center;
+  color: var(--muted);
+  padding: 40px 20px;
+  font-size: 12.5px;
+}
+.empty .big { font-size: 26px; margin-bottom: 10px; }
+.shimmer {
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, var(--border) 25%, color-mix(in srgb, var(--fg) 12%, transparent) 37%, var(--border) 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.3s ease infinite;
+}
+@keyframes shimmer { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
+
+.status-line {
+  font-size: 11.5px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.dot-pulse {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--atlas-accent);
+  animation: pulse 1s ease infinite;
+}
+@keyframes pulse { 0%,100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+.graph-wrap { height: 420px; border: 1px solid var(--border); border-radius: var(--atlas-radius); overflow: hidden; }
