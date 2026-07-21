@@ -1,0 +1,19 @@
+{
+  "authenticateUser": {
+    "summary": "This function implements email/password authentication with OAuth fallback and refresh-token rotation to handle provider outages and improve security.",
+    "confidence": 0.96,
+    "reasoning": "I believe authenticateUser is implemented this way because of a real production incident. On 2025-03-18 our OAuth providers (Google and Azure) had a 17-minute outage (INC-284), and because the function verified every request against the identity provider, ~3,400 enterprise users were force-logged-out mid-session. The team's response, recorded in ADR-012 and shipped in PR #842, was threefold: cache sessions in Redis so an already-authenticated user survives a provider blip, retry the provider with bounded backoff before falling back to the cached session, and rotate refresh tokens on every issue to close the replay window Security flagged in the post-mortem. That causal chain — incident → decision → change — is exactly why the implementation looks the way it does, and why it deliberately is not a single OAuth call.",
+    "key_reasons": [
+      { "label": "Incident #284 (Mar 2025)", "text": "OAuth providers caused forced logouts during a 17-minute outage.", "kind": "incident" },
+      { "label": "Security", "text": "Refresh-token rotation prevents token-replay attacks.", "kind": "adr" },
+      { "label": "UX", "text": "Seamless fallback to a cached session reduces user friction during outages.", "kind": "pull_request" }
+    ],
+    "alternatives": [
+      "Keep a hard dependency on the OAuth provider — rejected; this is what caused INC-284.",
+      "Dramatically longer JWT TTLs — rejected; widens the token-replay attack surface.",
+      "Multi-provider failover only — insufficient; both providers degraded simultaneously."
+    ],
+    "dependencies": ["RedisService (session cache)", "OAuthProvider (retry + fallback)", "JwtService (refresh-token rotation)", "ConfigService"],
+    "impact_summary": "Changing authenticateUser risks re-introducing the INC-284 outage behaviour and the token-replay window; Redis is load-bearing here."
+  }
+}
