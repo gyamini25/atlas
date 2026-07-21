@@ -1,0 +1,20 @@
+[
+  {
+    "number": 842,
+    "title": "Add retry logic + Redis session fallback to authenticateUser",
+    "author": "priya-nair",
+    "created_at": "2025-03-20T09:12:00Z",
+    "merged_at": "2025-03-24T16:40:00Z",
+    "url": "https://github.com/acme/acme-fintech-platform/pull/842",
+    "body": "Implements ADR-012 in response to INC-284.\n\nWhat this does:\n- Caches sessions in Redis so an OAuth provider outage no longer force-logs-out active enterprise users.\n- Adds bounded retry + backoff around the OAuth provider, then falls back to the cached session.\n- Rotates refresh tokens on every issue to close the token-replay window Security flagged in the INC-284 post-mortem.\n\nWhy not simpler: a single OAuth call per request is what caused INC-284. Longer JWT TTLs were rejected because they widen the replay surface. See ADR-012 for the full alternatives analysis.\n\nRisk: Redis is now load-bearing for auth. Follow-up to add Redis HA tracked in #851."
+  },
+  {
+    "number": 767,
+    "title": "Introduce OAuth (Google, Azure) integration",
+    "author": "marcus-lee",
+    "created_at": "2023-06-02T11:00:00Z",
+    "merged_at": "2023-06-09T13:20:00Z",
+    "url": "https://github.com/acme/acme-fintech-platform/pull/767",
+    "body": "Adds OAuth login via Google and Azure providers. Replaces the basic email/password-only flow. Enterprise SSO requirement from the sales team."
+  }
+]

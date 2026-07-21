@@ -1,0 +1,14 @@
+[
+  {
+    "channel": "backend-discussion",
+    "title": "#backend-discussion — auth resiliency after the outage",
+    "date": "2025-03-19",
+    "messages": [
+      { "user": "dana", "text": "Post-mortem for INC-284 is up. TL;DR: OAuth went down for 17 min and we force-logged-out ~3400 enterprise users because authenticateUser hits the provider on every request." },
+      { "user": "priya", "text": "Right, there's no cached session to fall back to. I think we cache sessions in Redis and validate against the cache first, then only hit the provider when there's no cache." },
+      { "user": "marcus", "text": "If we keep sessions alive longer we need refresh-token rotation, otherwise we widen the replay window. I don't want to trade an availability bug for a security bug." },
+      { "user": "priya", "text": "Agreed. Plan: Redis session cache + retry/backoff on the provider + fallback to cache + rotate refresh tokens. I'll write it up as ADR-012 and put the change in PR #842." },
+      { "user": "dana", "text": "+1. Please add a regression test that a provider outage does NOT log out a user with a valid cached session." }
+    ]
+  }
+]
