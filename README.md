@@ -63,7 +63,11 @@ atlas/
 ├── backend/      FastAPI engine: indexer, graph, embeddings, reasoning, impact, replay
 ├── extension/    VS Code extension + React webview (Ask · Timeline · Graph · Impact)
 ├── demo/         acme-fintech-platform — the flagship demo repo (real git history + ADR/incident/PR/Slack)
-└── docs/adr/     Atlas's own architecture decision records
+├── docs/adr/     Atlas's own architecture decision records
+├── setup.sh      one-command setup: backend deps, demo history, built .vsix
+├── run.sh        start the backend locally
+├── render.yaml   Render blueprint for the hosted backend
+└── JUDGES.md     the 3-minute walkthrough
 ```
 
 ## Quick start
@@ -107,13 +111,18 @@ cp .env.example .env          # set OPENAI_API_KEY and ATLAS_LLM_MODE=live to go
 
 # prove the whole engine end-to-end on the demo repo (no server, no network):
 python -m scripts.smoke
+```
 
-# run the API the extension talks to:
-uvicorn atlas.api.app:app --port 8787
+Then start the API the extension talks to — from the repository root:
+
+```bash
+./run.sh                        # http://127.0.0.1:8787
+curl localhost:8787/health      # {"status":"ok","llm_mode":"mock",...}
 ```
 
 The engine defaults to **mock mode**: deterministic, offline, and grounded in *real* retrieved
-evidence. Set `ATLAS_LLM_MODE=live` with an `OPENAI_API_KEY` to reason with GPT-5.6.
+evidence. Set `ATLAS_LLM_MODE=live` with an `OPENAI_API_KEY` to reason with GPT-5.6, then confirm
+with `curl localhost:8787/api/verify-llm`.
 
 ### 2. Demo repo (sample data)
 
@@ -126,13 +135,23 @@ cd demo && ./build-demo-git-history.sh   # reconstructs real, dated git history
 ```bash
 cd extension
 npm install
-npm run build            # builds the React webview + bundles the extension
-# press F5 in VS Code to launch the Extension Development Host
+npm run build                                       # React webview + extension bundle
+npx @vscode/vsce package --allow-missing-repository # produces atlas-vscode-0.1.0.vsix
+code --install-extension atlas-vscode-0.1.0.vsix
 ```
 
-Open the `demo/acme-fintech-platform` folder, open
-`backend/src/modules/auth/auth.service.ts`, select **`authenticateUser`**, and click
+Reload VS Code (`Cmd/Ctrl+Shift+P` → **Developer: Reload Window**), then open the
+`demo/acme-fintech-platform` folder — **not** the repository root, since Atlas indexes the
+folder you open and the sample repo's ADRs, incidents and PR exports live at *its* root.
+Open `backend/src/modules/auth/auth.service.ts`, select **`authenticateUser`**, and click
 **✨ Ask Atlas**.
+
+> **Point the extension at your local backend.** `atlas.backendUrl` defaults to the hosted
+> deployment, so a backend you started with `./run.sh` is ignored until you change it:
+> **Settings → Extensions → Atlas → `atlas.backendUrl`** = `http://127.0.0.1:8787`.
+
+For extension development, `npm run watch` plus **F5** launches an Extension Development
+Host instead — no packaging step.
 
 ## The 30-second demo
 
@@ -146,6 +165,11 @@ Open the `demo/acme-fintech-platform` folder, open
 
 Steps 3 and 4 are also available from the command palette as
 **Atlas: Replay Evolution** and **Atlas: Impact Analysis**.
+
+The summary text for `authenticateUser` is a curated trace in `backend/seed/traces.json`, so the
+flagship demo reads identically every run; its citations, timeline and graph are all derived from
+the repository. Ask about `rotateRefresh` (**0.97**) or `charge` (**0.46**, and it says the evidence
+is thin) to watch the pipeline reason from scratch — see [JUDGES.md](JUDGES.md).
 
 > *"This repository no longer stores code. It remembers why the code exists."*
 
